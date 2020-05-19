@@ -45,6 +45,7 @@ app.models.user.find((err, result) => {
     }
 
     app.models.user.create(user, (err, result) => {
+      console.log('created admin');
       console.log({result});
     })
   }
@@ -84,8 +85,9 @@ app.models.Role.find({
 
         if (!roleError && result) {
 
-          app.models.user.findOne((userError, user) => {
+          app.models.user.findOne({where: {username: 'admin'}}, (userError, user) => {
             if (!userError && user) {
+              console.log('first user found', user)
 
               result.principals.create({
                 principalType: app.models.RoleMapping.USER,
