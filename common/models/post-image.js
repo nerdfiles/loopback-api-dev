@@ -75,7 +75,7 @@ module.exports = function(PostImage) {
         var fileInfo = file.files.file[0];
 
         sharp('./server/storage/' + ctx.req.params.container + '/' + fileInfo.name)
-          .resize(100)
+          .resize(200, 200)
           .toFile('./server/storage/' + ctx.req.params.container + '/100-' + fileInfo.name, (err) => {
 
             if (!err) {
