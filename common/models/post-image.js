@@ -43,7 +43,7 @@ const remoteMethodConfig = {
 
 const fs = require('fs');
 
-const CONTAINER_URL = '/api/containers/';
+const CONTAINER_URL = '/api/ImageFiles/';
 
 module.exports = function(PostImage) {
 
@@ -55,9 +55,17 @@ module.exports = function(PostImage) {
 
     ctx.req.params.container = 'postImages';
 
-    if (!fs.existsSync('./server/storage' + ctx.req.params.container)) {
-      fs.mkdirSync('./server/storage' + ctx.req.params.container);
+    if (!fs.existsSync('./server/storage/' + ctx.req.params.container)) {
+      fs.mkdirSync('./server/storage/' + ctx.req.params.container);
     }
+
+    PostImage.find({ where: { postId: post_id}}, (fer, files) => {
+      if (!fer && files) {
+        files.map(fil => {
+          fil.updateAttributes({postId: null});
+        })
+      }
+    });
 
     PostImage.app.models.ImageFile.upload(ctx.req, ctx.result, options, (err, file) => {
 
@@ -68,7 +76,7 @@ module.exports = function(PostImage) {
 
         sharp('./server/storage/' + ctx.req.params.container + '/' + fileInfo.name)
           .resize(100)
-          .toFile('./server/storage' + ctx.req.params.container + '/100-' + fileInfo.name, (err) => {
+          .toFile('./server/storage/' + ctx.req.params.container + '/100-' + fileInfo.name, (err) => {
 
             if (!err) {
               PostImage.create({
