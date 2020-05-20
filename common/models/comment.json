@@ -1,12 +1,12 @@
 {
-  "name": "PostImage",
+  "name": "Comment",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "url": {
+    "content": {
       "type": "string"
     },
     "created_at": {
@@ -15,34 +15,27 @@
   },
   "validations": [],
   "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
     "Post": {
       "type": "belongsTo",
       "model": "Post",
       "foreignKey": "postId"
     },
-    "user": {
+    "Profile": {
       "type": "belongsTo",
-      "model": "user",
-      "foreignKey": "userId"
+      "model": "Profile",
+      "foreignKey": "profileId"
     }
   },
   "acls": [
     {
-      "accessType": "WRITE",
+      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "DENY"
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "editor",
       "permission": "ALLOW"
     }
   ],

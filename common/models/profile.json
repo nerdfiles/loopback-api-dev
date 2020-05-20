@@ -12,6 +12,9 @@
     "last_name": {
       "type": "string"
     },
+    "name": {
+      "type": "string"
+    },
     "created_at": {
       "type": "date"
     },
@@ -38,6 +41,12 @@
       "type": "hasMany",
       "model": "Post",
       "foreignKey": ""
+    },
+    "Comments": {
+      "type": "hasMany",
+      "model": "Comment",
+      "foreignKey": ""
+
     }
   },
   "acls": [
@@ -57,6 +66,12 @@
       "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
       "permission": "ALLOW"
     }
   ],

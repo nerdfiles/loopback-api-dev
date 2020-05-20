@@ -36,7 +36,7 @@ boot(app, __dirname, function(err) {
 //console.log(Object.keys(app.models))
 
 app.models.user.find((err, result) => {
-  if (result.length === 0 ) {
+  if (result && result.length === 0 ) {
     const user = {
       email: "admin@example.com",
       password: "1234",
@@ -53,15 +53,39 @@ app.models.user.find((err, result) => {
 
 app.models.user.afterRemote('create', async (ctx, user, next) => {
 
+  console.log('created user')
   console.log({user});
 
   app.models.Profile.create({
     first_name: 'user.username',
+    name: user.username,
     created_at: new Date(),
-    userId: user.id
+    userId: user.id,
+    role: 'editor'
   }, (err, result) => {
     if (!err && result) {
+      console.log('created profile')
       console.log({ result});
+
+      app.models.Role.findOrCreate({
+        name: "editor"
+      }, (err, roleFound) => {
+        if (!err && roleFound) {
+
+          console.log('found or created role for editor')
+          console.log({roleFound});
+
+          roleFound.principals.create({
+            principalType: app.models.RoleMapping.USER,
+            principalId: user.id
+          }, (errPrincipal, principal) => {
+            console.log("created principal for editor")
+            console.log({principal})
+          });
+
+        }
+      });
+
     } else {
       console.log(err);
     }
@@ -112,7 +136,8 @@ app.models.Role.find({where: {name:"editor"}}, (roleErr, roles) => {
       app.models.Role.create({
         name: 'editor'
       }, (creationErr, resultRole) => {
-        console.log(creationErr, resultRole)
+        console.log('created editor role')
+        console.log({resultRole})
       })
     }
   }
